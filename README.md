@@ -1,5 +1,7 @@
 # how-many-days-left
 
+Inspired by: https://kk.org/ct2/my-life-countdown-1/
+
 ```
 $ how-many-days-left -help
 Usage of how-many-days-left:
