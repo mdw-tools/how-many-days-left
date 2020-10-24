@@ -11,33 +11,22 @@ import (
 )
 
 func main() {
-	log.SetFlags(0)
-
 	sex, birthday := parseCLI()
 	age := calculateAgeInYears(birthday)
 	expectancy := getAdditionalLifeExpectancyInYears(age, sex)
 	projectedDeath := calculateProjectedDeathDate(expectancy, birthday, age)
 	projectedDaysRemaining := countProjectedDaysRemaining(projectedDeath)
 
-	log.Printf("[INFO] "+
+	fmt.Printf(""+
 		"Based on medicaid's average life expectancy "+
 		"for %ss you have %s days remaining until "+
-		"reaching your projected lifespan of %.2f "+
+		"reaching your projected lifespan of %.2f " +
 		"years on %s.\n",
 		formatSex[sex],
 		formatDays(projectedDaysRemaining),
 		float64(age)+expectancy,
 		projectedDeath.Format("Monday, January 2 of 2006"),
 	)
-
-	fmt.Println()
-	fmt.Printf("Sex:                       %s\n", formatSex[sex])
-	fmt.Printf("Current Age:               %d\n", age)
-	fmt.Printf("Remaining Life Expectancy: %.2f\n", expectancy)
-	fmt.Printf("Total Life Expectancy:     %.2f\n", float64(age)+expectancy)
-	fmt.Printf("Date of Birth:             %s\n", birthday.Format("2006-01-02"))
-	fmt.Printf("Projected Date of Death:   %s\n", projectedDeath.Format("2006-01-02"))
-	fmt.Printf("Projected Days Remaining:  %d\n", projectedDaysRemaining)
 }
 func parseCLI() (sex string, birthday time.Time) {
 	birth_ := flag.String("birth", "", "Birth date (YYYY-MM-DD)")
