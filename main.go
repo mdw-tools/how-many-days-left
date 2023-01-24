@@ -7,12 +7,24 @@ import (
 	"time"
 )
 
+const verboseDate = "Monday, January 2 of 2006"
+
 func main() {
 	sex, birthday := parseCLI()
-	age := calculateAgeInYears(birthday)
-	expectancy := getAdditionalLifeExpectancyInYears(age, sex)
-	projectedDeath := calculateProjectedDeathDate(expectancy, birthday, age)
+	ageInDays := calculateAgeInDays(birthday)
+	ageInYears := calculateAgeInYears(birthday)
+	expectancy := getAdditionalLifeExpectancyInYears(ageInYears, sex)
+	projectedDeath := calculateProjectedDeathDate(expectancy, birthday, ageInYears)
 	projectedDaysRemaining := countProjectedDaysRemaining(projectedDeath)
+	yearsSinceBirth := time.Now().Sub(birthday).Abs().Hours() / 24.0 / 365.0
+	yearsRemaining := time.Now().Sub(projectedDeath).Abs().Hours() / 24.0 / 365.0
+
+	fmt.Printf(""+
+		"Congratulations, you have lived %s days, a "+
+		"lifespan of %.2f years since your birth on %s.\n",
+		formatDays(ageInDays),
+		yearsSinceBirth,
+		birthday.Format(verboseDate))
 
 	fmt.Printf(""+
 		"Based on medicaid's average life expectancy "+
@@ -21,24 +33,43 @@ func main() {
 		"years on %s.\n",
 		formatSex[sex],
 		formatDays(projectedDaysRemaining),
-		float64(age)+expectancy,
-		projectedDeath.Format("Monday, January 2 of 2006"),
+		float64(ageInYears)+expectancy,
+		projectedDeath.Format(verboseDate),
+	)
+	fmt.Println()
+	fmt.Println("Event  Date         Age")
+	fmt.Println("------------------------------------------")
+	fmt.Printf(""+
+		"Birth: %s  0.00 (%s days ago)\n",
+		birthday.Format(time.DateOnly),
+		formatDays(ageInDays),
+	)
+	fmt.Printf(""+
+		"Today: %s %-5.2f\n",
+		time.Now().Format(time.DateOnly),
+		yearsSinceBirth,
+	)
+	fmt.Printf(""+
+		"Death: %s %-5.2f (%s days left)\n",
+		projectedDeath.Format(time.DateOnly),
+		yearsRemaining,
+		formatDays(projectedDaysRemaining),
 	)
 }
 
 func parseCLI() (sex string, birthday time.Time) {
-	birth_ := flag.String("birth", "", "Birth date (YYYY-MM-DD)")
-	sex_ := flag.String("sex", "", "Sex (one of 'f' or 'm')")
+	var birth string
+	flag.StringVar(&birth, "birth", "", "Birth date (YYYY-MM-DD)")
+	flag.StringVar(&sex, "sex", "", "Sex (one of 'f' or 'm')")
 
 	flag.Parse()
 
-	birthday, err := time.Parse("2006-01-02", *birth_)
+	birthday, err := time.Parse(time.DateOnly, birth)
 	if err != nil {
 		flag.PrintDefaults()
 		log.Fatal("Failed to parse date of birth.")
 	}
 
-	sex = *sex_
 	if sex != "m" && sex != "f" {
 		flag.PrintDefaults()
 		log.Fatal("Failed to parse sex.")
@@ -46,15 +77,18 @@ func parseCLI() (sex string, birthday time.Time) {
 
 	return sex, birthday
 }
-func calculateAgeInYears(birth time.Time) (years int) {
-	now := time.Now()
-	for {
-		birth = birth.AddDate(1, 0, 0)
-		if birth.After(now) {
-			return years
-		}
-		years++
+
+func calculateAgeInDays(birth time.Time) (days int) {
+	for now := time.Now(); birth.Before(now); days++ {
+		birth = birth.AddDate(0, 0, 1)
 	}
+	return days
+}
+func calculateAgeInYears(birth time.Time) (years int) {
+	for now := time.Now(); birth.Before(now); years++ {
+		birth = birth.AddDate(1, 0, 0)
+	}
+	return years
 }
 func getAdditionalLifeExpectancyInYears(age int, sex string) float64 {
 	if sex == "f" {
@@ -63,15 +97,14 @@ func getAdditionalLifeExpectancyInYears(age int, sex string) float64 {
 		return males[age]
 	}
 }
-
 func calculateProjectedDeathDate(expectancy float64, birthday time.Time, age int) time.Time {
 	yearsToAdd := int(expectancy)
 	daysToAdd := int(365.0 * (expectancy - float64(yearsToAdd)))
 	return birthday.AddDate(age, 0, 0).AddDate(yearsToAdd, 0, daysToAdd)
 }
 func countProjectedDaysRemaining(projectedDeath time.Time) (projectedDaysRemaining int) {
-	for d := time.Now(); d.Before(projectedDeath); d = d.AddDate(0, 0, 1) {
-		projectedDaysRemaining++
+	for d := time.Now(); d.Before(projectedDeath); projectedDaysRemaining++ {
+		d = d.AddDate(0, 0, 1)
 	}
 	return projectedDaysRemaining
 }

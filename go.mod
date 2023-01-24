@@ -1,3 +1,3 @@
 module how-many-days-left
 
-go 1.15
+go 1.20
