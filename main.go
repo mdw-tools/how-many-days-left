@@ -17,18 +17,17 @@ func main() {
 	projectedDeath := calculateProjectedDeathDate(expectancy, birthday, ageInYears)
 	projectedDaysRemaining := countProjectedDaysRemaining(projectedDeath)
 	yearsSinceBirth := time.Now().Sub(birthday).Abs().Hours() / 24.0 / 365.0
-	yearsRemaining := time.Now().Sub(projectedDeath).Abs().Hours() / 24.0 / 365.0
 
 	fmt.Printf(""+
-		"Congratulations, you have lived %s days, a "+
-		"lifespan of %.2f years since your birth on %s.\n",
+		"Given that you have lived %s days, a "+
+		"lifespan of %.2f years since your birth on %s, ",
 		formatDays(ageInDays),
 		yearsSinceBirth,
 		birthday.Format(verboseDate))
 
 	fmt.Printf(""+
-		"Based on medicaid's average life expectancy "+
-		"for %ss you have %s days remaining until "+
+		"and based on medicaid's average life expectancy "+
+		"for %ss, you have %s days remaining until "+
 		"reaching your projected lifespan of %.2f "+
 		"years on %s.\n",
 		formatSex[sex],
@@ -52,7 +51,7 @@ func main() {
 	fmt.Printf(""+
 		"Death: %s %-5.2f (%s days left)\n",
 		projectedDeath.Format(time.DateOnly),
-		yearsRemaining,
+		float64(ageInYears)+expectancy,
 		formatDays(projectedDaysRemaining),
 	)
 }
