@@ -27,10 +27,11 @@ func main() {
 		birthday.Format(verboseDate))
 
 	fmt.Printf(""+
-		"and based on medicaid's average life expectancy "+
+		"and based on the %d release of medicaid's average life expectancy "+
 		"for %ss, you have %s days remaining until "+
 		"reaching your projected lifespan of %.2f "+
 		"years on %s.\n",
+		medicaidDataReleaseYear,
 		formatSex[sex],
 		formatDays(projectedDaysRemaining),
 		float64(ageInYears)+expectancy,
@@ -123,6 +124,8 @@ func formatDays(days int) string {
 	}
 	return DAYS
 }
+
+var medicaidDataReleaseYear = 2023
 
 // 2023 Medicaid Life Expectancy Tables:
 // https://www.health.ny.gov/health_care/medicaid/publications/docs/gis/23ma09_att1.pdf
