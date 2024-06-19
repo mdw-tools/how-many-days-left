@@ -10,14 +10,15 @@ import (
 const verboseDate = "Monday, January 2 of 2006"
 
 func main() {
-	sex, birthday := parseCLI()
-	ageInDays := calculateAgeInDays(birthday)
-	ageInYears := calculateAgeInYears(birthday)
-	expectancy := getAdditionalLifeExpectancyInYears(ageInYears, sex)
-	projectedDeath := calculateProjectedDeathDate(expectancy, birthday, ageInYears)
-	projectedDaysRemaining := countProjectedDaysRemaining(projectedDeath)
-	yearsSinceBirth := time.Now().Sub(birthday).Abs().Hours() / 24.0 / 365.0
-
+	var (
+		sex, birthday          = parseCLI()
+		ageInDays              = calculateAgeInDays(birthday)
+		ageInYears             = calculateAgeInYears(birthday)
+		expectancy             = getAdditionalLifeExpectancyInYears(ageInYears, sex)
+		projectedDeath         = calculateProjectedDeathDate(expectancy, birthday, ageInYears)
+		projectedDaysRemaining = countProjectedDaysRemaining(projectedDeath)
+		yearsSinceBirth        = time.Now().Sub(birthday).Abs().Hours() / 24.0 / 365.0
+	)
 	fmt.Printf(""+
 		"Given that you have lived %s days, a "+
 		"lifespan of %.2f years since your birth on %s, ",
@@ -60,7 +61,6 @@ func parseCLI() (sex string, birthday time.Time) {
 	var birth string
 	flag.StringVar(&birth, "birth", "", "Birth date (YYYY-MM-DD)")
 	flag.StringVar(&sex, "sex", "", "Sex (one of 'f' or 'm')")
-
 	flag.Parse()
 
 	birthday, err := time.Parse(time.DateOnly, birth)
