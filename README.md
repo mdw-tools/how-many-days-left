@@ -21,5 +21,5 @@ Today: 2025-07-18 55.58
 Death: 2052-12-05 82.93 (10,002 days left)
 ```
 
-2023 data: https://www.health.ny.gov/health_care/medicaid/publications/docs/gis/23ma09_att1.pdf
-2024 data: https://www.health.ny.gov/health_care/medicaid/publications/docs/gis/24ma05_att1.pdf
+- 2023 data: https://www.health.ny.gov/health_care/medicaid/publications/docs/gis/23ma09_att1.pdf
+- 2024 data: https://www.health.ny.gov/health_care/medicaid/publications/docs/gis/24ma05_att1.pdf
